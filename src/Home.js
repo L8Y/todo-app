@@ -21,17 +21,22 @@ const Home = (props) => {
 
     const addTask = (event) => {
         event.preventDefault();
-        addDoc(usersCollectionRef, {
-            task: task,
-            completed: false,
-            timestamp: serverTimestamp(),
-        })
-            .then(() => {
-                getData();
+        if (task !== "") {
+            addDoc(usersCollectionRef, {
+                task: task,
+                completed: false,
+                timestamp: serverTimestamp(),
             })
-            .catch((error) => {
-                alert(error);
-            });
+                .then(() => {
+                    setTask
+                        ("");
+                })
+                .catch((error) => {
+                    alert(error);
+                });
+        } else {
+            alert("Enter a task")
+        }
     };
 
     const statusUpdate = (event, taskId) => {
@@ -69,6 +74,10 @@ const Home = (props) => {
             .catch(() => alert("error"));
     };
 
+    const resetInput = () => {
+        setTask("")
+    }
+
     return (
         <div>
             <aside className="logout-layout">
@@ -80,10 +89,12 @@ const Home = (props) => {
                 <form className="search-area">
                     <input
                         className="input-task"
-                        required
                         type="text"
                         placeholder="Enter the task"
+                        value={task}
                         onChange={(event) => setTask(event.target.value)}
+                        onClick={resetInput}
+                        required
                     />
                     <button
                         className="addtask-button"
@@ -102,6 +113,7 @@ const Home = (props) => {
                                         defaultChecked
                                         className="checkbox"
                                         type="checkbox"
+                                        value={task}
                                         onClick={(event) => statusUpdate(event, item.id)}
                                     />
                                     <span className="task-title">
